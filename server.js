@@ -3,6 +3,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
 const os = require('os');
+const fs = require('fs');
 
 const app = express();
 const server = http.createServer(app);
@@ -15,6 +16,7 @@ const MASA_SAYISI = 28;
 const aktivCagriler = {};
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname));
 
 // Müşteri sayfası (QR koddan açılır)
 app.get('/masa/:no', (req, res) => {
@@ -22,7 +24,10 @@ app.get('/masa/:no', (req, res) => {
   if (isNaN(no) || no < 1 || no > MASA_SAYISI) {
     return res.status(404).send('Geçersiz masa numarası');
   }
-  res.sendFile(path.join(__dirname, 'public', 'masa.html'));
+  const masaDosya = fs.existsSync(path.join(__dirname, 'public', 'masa.html'))
+    ? path.join(__dirname, 'public', 'masa.html')
+    : path.join(__dirname, 'masa.html');
+  res.sendFile(masaDosya);
 });
 
 // Garson çağır (müşteri butona basınca)
