@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Garson Çağırma Sistemi</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0f0f1a;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: #16213e;
+      border-bottom: 2px solid #1f3460;
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-sol {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .header-icon { font-size: 32px; }
+
+    .header-baslik {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .header-altyazi {
+      font-size: 13px;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    .saat-kutu {
+      text-align: right;
+    }
+
+    .saat {
+      font-size: 32px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: #4ade80;
+    }
+
+    .tarih {
+      font-size: 13px;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    /* ── İSTATİSTİKLER ── */
+    .istatistik-bar {
+      background: #12121f;
+      border-bottom: 1px solid #1f1f35;
+      padding: 10px 28px;
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .istat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    .istat-sayi {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .istat-sayi.bekleyen { color: #f97316; }
+    .istat-sayi.toplam { color: #60a5fa; }
+
+    .ses-btn {
+      margin-left: auto;
+      padding: 7px 16px;
+      border-radius: 8px;
+      border: 1px solid #7f1d1d;
+      background: #2d1515;
+      color: #f87171;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .ses-btn:hover { opacity: 0.85; }
+
+    .baglanti-durum {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .durum-nokta {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #4ade80;
+    }
+
+    .durum-nokta.offline { background: #f87171; }
+
+    /* ── MASA GRİD ── */
+    .grid-alan {
+      flex: 1;
+      padding: 24px 28px;
+    }
+
+    .masa-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 14px;
+      max-width: 1100px;
+    }
+
+    .masa-kart {
+      background: #1a1a2e;
+      border: 2px solid #252545;
+      border-radius: 14px;
+      padding: 18px 10px;
+      text-align: center;
+      cursor: default;
+      transition: transform 0.15s, border-color 0.15s;
+      position: relative;
+      user-select: none;
+    }
+
+    .masa-kart:hover { border-color: #3a3a60; }
+
+    .masa-kart.aktif {
+      background: #2d1515;
+      border-color: #e94560;
+      cursor: pointer;
+      animation: kart-titreme 1.5s ease-in-out infinite;
+      box-shadow: 0 0 20px rgba(233,69,96,0.35);
+    }
+
+    .masa-kart.aktif:hover {
+      transform: scale(1.04);
+    }
+
+    @keyframes kart-titreme {
+      0%, 100% { box-shadow: 0 0 15px rgba(233,69,96,0.3); }
+      50%       { box-shadow: 0 0 30px rgba(233,69,96,0.65); }
+    }
+
+    .masa-no-etiket {
+      font-size: 11px;
+      color: #555;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .masa-kart.aktif .masa-no-etiket { color: #f87171; }
+
+    .masa-numara {
+      font-size: 34px;
+      font-weight: 800;
+      color: #444;
+      line-height: 1;
+    }
+
+    .masa-kart.aktif .masa-numara { color: white; }
+
+    .masa-saat {
+      font-size: 12px;
+      color: #e94560;
+      margin-top: 6px;
+      font-weight: 600;
+      min-height: 16px;
+    }
+
+    .kapat-ipucu {
+      font-size: 10px;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    .masa-kart.aktif .kapat-ipucu { color: #888; }
+
+    /* ── TOAST BİLDİRİM ── */
+    .toast-konteyner {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 280px;
+    }
+
+    .toast {
+      background: #e94560;
+      color: white;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      box-shadow: 0 8px 25px rgba(233,69,96,0.5);
+      animation: toast-gir 0.3s ease, toast-cik 0.3s ease 3.7s forwards;
+    }
+
+    @keyframes toast-gir {
+      from { transform: translateX(120%); opacity: 0; }
+      to   { transform: translateX(0);   opacity: 1; }
+    }
+
+    @keyframes toast-cik {
+      from { transform: translateX(0);   opacity: 1; }
+      to   { transform: translateX(120%); opacity: 0; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .masa-grid { grid-template-columns: repeat(5, 1fr); }
+    }
+    @media (max-width: 650px) {
+      .masa-grid { grid-template-columns: repeat(4, 1fr); }
+      header { flex-direction: column; gap: 10px; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-sol">
+      <div class="header-icon">🛎️</div>
+      <div>
+        <div class="header-baslik">GARSON ÇAĞIRMA SİSTEMİ</div>
+        <div class="header-altyazi">Aktif çağrıya tıklayarak kapatın</div>
+      </div>
+    </div>
+    <div class="saat-kutu">
+      <div class="saat" id="saat">--:--:--</div>
+      <div class="tarih" id="tarih"></div>
+    </div>
+  </header>
+
+  <div class="istatistik-bar">
+    <div class="istat">
+      <span>🔴 Bekleyen:</span>
+      <span class="istat-sayi bekleyen" id="bekleyenSayi">0</span>
+    </div>
+    <div class="istat">
+      <span>📊 Toplam masa:</span>
+      <span class="istat-sayi toplam">28</span>
+    </div>
+    <button class="ses-btn" id="sesBtn" onclick="sesEtkinlestir()">🔇 Sesi Etkinleştir</button>
+    <div class="baglanti-durum">
+      <div class="durum-nokta" id="durumNokta"></div>
+      <span id="durumYazi">Bağlanıyor...</span>
+    </div>
+  </div>
+
+  <div class="grid-alan">
+    <div class="masa-grid" id="masaGrid"></div>
+  </div>
+
+  <div class="toast-konteyner" id="toastKonteyner"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const MASA_SAYISI = 28;
+
+    // ── SAAT ──────────────────────────────────────
+    function saatiGuncelle() {
+      const simdi = new Date();
+      document.getElementById('saat').textContent =
+        simdi.toLocaleTimeString('tr-TR');
+      document.getElementById('tarih').textContent =
+        simdi.toLocaleDateString('tr-TR', {
+          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+        });
+    }
+    saatiGuncelle();
+    setInterval(saatiGuncelle, 1000);
+
+    // ── SES (Web Audio API) ──────────────────────
+    let audioCtx = null;
+    let sesAktif = false;
+
+    function audioCtxHazirla() {
+      if (audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function sesEtkinlestir() {
+      audioCtxHazirla();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      sesAktif = true;
+
+      // Kısa test sesi çal
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.frequency.value = 660;
+      osc.type = 'sine';
+      const t = audioCtx.currentTime;
+      gain.gain.setValueAtTime(0.3, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+      osc.start(t);
+      osc.stop(t + 0.4);
+
+      // Butonu güncelle
+      const btn = document.getElementById('sesBtn');
+      btn.textContent = '🔊 Ses Açık';
+      btn.style.background = '#166534';
+      btn.style.borderColor = '#4ade80';
+      btn.style.color = '#4ade80';
+    }
+
+    // Sayfaya herhangi bir tıklamada da otomatik aktif et
+    document.addEventListener('click', function ilkTiklama() {
+      if (!sesAktif) sesEtkinlestir();
+      document.removeEventListener('click', ilkTiklama);
+    }, { once: true });
+
+    function bildirimSesiCal() {
+      if (!audioCtx || !sesAktif) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      [[0, 880], [0.28, 1108]].forEach(([gecikme, frekans]) => {
+        const osc  = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sine';
+        osc.frequency.value = frekans;
+        const t = audioCtx.currentTime + gecikme;
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.5, t + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.8);
+        osc.start(t);
+        osc.stop(t + 0.8);
+      });
+    }
+
+    // ── MASA KARTLARI ────────────────────────────
+    const masaGrid = document.getElementById('masaGrid');
+    const masaKartlari = {};
+
+    for (let i = 1; i <= MASA_SAYISI; i++) {
+      const kart = document.createElement('div');
+      kart.className = 'masa-kart';
+      kart.id = `masa-${i}`;
+      kart.innerHTML = `
+        <div class="masa-no-etiket">MASA</div>
+        <div class="masa-numara">${i}</div>
+        <div class="masa-saat" id="saat-${i}"></div>
+        <div class="kapat-ipucu" id="ipucu-${i}"></div>
+      `;
+      kart.addEventListener('click', () => cagriyiKapat(i));
+      masaGrid.appendChild(kart);
+      masaKartlari[i] = kart;
+    }
+
+    function masayiAktifYap(masaNo, saat) {
+      const kart = masaKartlari[masaNo];
+      if (!kart) return;
+      kart.classList.add('aktif');
+      document.getElementById(`saat-${masaNo}`).textContent = saat;
+      document.getElementById(`ipucu-${masaNo}`).textContent = 'Tıkla → Kapat';
+      istatGuncelle();
+    }
+
+    function masayiTemizle(masaNo) {
+      const kart = masaKartlari[masaNo];
+      if (!kart) return;
+      kart.classList.remove('aktif');
+      document.getElementById(`saat-${masaNo}`).textContent = '';
+      document.getElementById(`ipucu-${masaNo}`).textContent = '';
+      istatGuncelle();
+    }
+
+    function istatGuncelle() {
+      const aktif = document.querySelectorAll('.masa-kart.aktif').length;
+      document.getElementById('bekleyenSayi').textContent = aktif;
+    }
+
+    // ── TOAST BİLDİRİM ───────────────────────────
+    function toastGoster(mesaj) {
+      const konteyner = document.getElementById('toastKonteyner');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = mesaj;
+      konteyner.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
+    }
+
+    // ── ÇAĞRI KAPAT ──────────────────────────────
+    async function cagriyiKapat(masaNo) {
+      if (!masaKartlari[masaNo].classList.contains('aktif')) return;
+      await fetch('/temizle/' + masaNo, { method: 'POST' });
+      // Sunucu socket ile herkese bildirir, burada bekliyoruz
+    }
+
+    // ── SOCKET.IO ────────────────────────────────
+    const socket = io();
+
+    socket.on('connect', () => {
+      document.getElementById('durumNokta').className = 'durum-nokta';
+      document.getElementById('durumYazi').textContent = 'Bağlı';
+
+      // Yeniden bağlanınca mevcut çağrıları senkronize et
+      fetch('/durum')
+        .then(r => r.json())
+        .then(veri => {
+          for (let i = 1; i <= MASA_SAYISI; i++) masayiTemizle(i);
+          for (const [no, bilgi] of Object.entries(veri)) {
+            masayiAktifYap(parseInt(no), bilgi.saat);
+          }
+        });
+    });
+
+    socket.on('disconnect', () => {
+      document.getElementById('durumNokta').className = 'durum-nokta offline';
+      document.getElementById('durumYazi').textContent = 'Bağlantı kesildi';
+    });
+
+    socket.on('yeni-cagri', ({ masa, saat }) => {
+      masayiAktifYap(masa, saat);
+      bildirimSesiCal();
+      toastGoster(`🔔  Masa ${masa} garson çağırıyor!`);
+    });
+
+    socket.on('temizlendi', ({ masa }) => {
+      masayiTemizle(masa);
+    });
+  </script>
+</body>
+</html>

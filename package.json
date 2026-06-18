@@ -1,0 +1,15 @@
+{
+  "name": "garson-sistemi",
+  "version": "1.0.0",
+  "description": "Restoran garson çağırma sistemi",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "qr": "node generate-qr.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.6.1",
+    "qrcode": "^1.5.3"
+  }
+}
