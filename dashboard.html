@@ -337,10 +337,7 @@
       document.removeEventListener('click', ilkTiklama);
     }, { once: true });
 
-    function bildirimSesiCal() {
-      if (!audioCtx || !sesAktif) return;
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-
+    function tekDing() {
       [[0, 880], [0.28, 1108]].forEach(([gecikme, frekans]) => {
         const osc  = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
@@ -355,6 +352,18 @@
         osc.start(t);
         osc.stop(t + 0.8);
       });
+    }
+
+    function bildirimSesiCal() {
+      if (!audioCtx || !sesAktif) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      const TEKRAR = 4;    // kaç kere çalsın
+      const ARALIK = 1200; // tekrarlar arası ms
+
+      for (let i = 0; i < TEKRAR; i++) {
+        setTimeout(tekDing, i * ARALIK);
+      }
     }
 
     // ── MASA KARTLARI ────────────────────────────
