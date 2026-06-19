@@ -85,4 +85,28 @@ app.get('/menu-kategoriler/:kategori', (req, res) => {
 });
 
 function yerelIP() {
-  const arayuzler = os.
+  const arayuzler = os.networkInterfaces();
+  for (const isim of Object.keys(arayuzler)) {
+    for (const ag of arayuzler[isim]) {
+      if (ag.family === 'IPv4' && !ag.internal) {
+        return ag.address;
+      }
+    }
+  }
+  return 'localhost';
+}
+
+server.listen(PORT, '0.0.0.0', () => {
+  const ip = yerelIP();
+  console.log('');
+  console.log('='.repeat(52));
+  console.log('   GARSON ÇAĞIRMA SİSTEMİ ÇALIŞIYOR');
+  console.log('='.repeat(52));
+  console.log(`   Dashboard : http://${ip}:${PORT}/dashboard.html`);
+  console.log(`   Sunucu IP : ${ip}`);
+  console.log('');
+  console.log('   QR kodları oluşturmak için yeni terminalde:');
+  console.log('   node generate-qr.js');
+  console.log('='.repeat(52));
+  console.log('');
+});
