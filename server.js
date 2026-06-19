@@ -63,29 +63,26 @@ app.get('/durum', (req, res) => {
   res.json(aktivCagriler);
 });
 
-function yerelIP() {
-  const arayuzler = os.networkInterfaces();
-  for (const isim of Object.keys(arayuzler)) {
-    for (const ag of arayuzler[isim]) {
-      if (ag.family === 'IPv4' && !ag.internal) {
-        return ag.address;
-      }
-    }
-  }
-  return 'localhost';
-}
-
-server.listen(PORT, '0.0.0.0', () => {
-  const ip = yerelIP();
-  console.log('');
-  console.log('='.repeat(52));
-  console.log('   GARSON ÇAĞIRMA SİSTEMİ ÇALIŞIYOR');
-  console.log('='.repeat(52));
-  console.log(`   Dashboard : http://${ip}:${PORT}/dashboard.html`);
-  console.log(`   Sunucu IP : ${ip}`);
-  console.log('');
-  console.log('   QR kodları oluşturmak için yeni terminalde:');
-  console.log('   node generate-qr.js');
-  console.log('='.repeat(52));
-  console.log('');
+// Menü kategorileri
+app.get('/menu-kategoriler', (req, res) => {
+  const menuDir = path.join(__dirname, 'public', 'menu');
+  if (!fs.existsSync(menuDir)) return res.json([]);
+  const kategoriler = fs.readdirSync(menuDir, { withFileTypes: true })
+    .filter(d => d.isDirectory())
+    .map(d => d.name)
+    .sort();
+  res.json(kategoriler);
 });
+
+// Kategori içindeki resimler
+app.get('/menu-kategoriler/:kategori', (req, res) => {
+  const kategoriDir = path.join(__dirname, 'public', 'menu', req.params.kategori);
+  if (!fs.existsSync(kategoriDir)) return res.json([]);
+  const resimler = fs.readdirSync(kategoriDir)
+    .filter(f => /\.(jpg|jpeg|png|webp|gif)$/i.test(f))
+    .sort();
+  res.json(resimler);
+});
+
+function yerelIP() {
+  const arayuzler = os.
