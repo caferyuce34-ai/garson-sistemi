@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menü Yönetimi</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f0f1a; color: white; min-height: 100vh; }
+
+    /* ── GİRİŞ ── */
+    .giris-ekrani {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .giris-kart {
+      background: #16213e; border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 40px 30px; max-width: 360px; width: 100%; text-align: center;
+    }
+    .giris-kart h1 { font-size: 22px; margin-bottom: 8px; }
+    .giris-kart p { color: #666; font-size: 14px; margin-bottom: 28px; }
+    .input {
+      width: 100%; padding: 14px 16px; background: #0f0f1a;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+      color: white; font-size: 16px; margin-bottom: 14px;
+    }
+    .input:focus { outline: none; border-color: #e94560; }
+    .btn-giris {
+      width: 100%; padding: 15px; background: #e94560; color: white;
+      border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer;
+    }
+    .hata { color: #f87171; font-size: 13px; margin-top: 10px; }
+
+    /* ── YÖNETİM PANELİ ── */
+    .panel { display: none; }
+    .panel.acik { display: block; }
+
+    header {
+      background: #16213e; border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 16px 24px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .header-baslik { font-size: 18px; font-weight: 700; }
+    .btn-cikis {
+      background: rgba(255,255,255,0.08); border: none; color: #aaa;
+      padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px;
+    }
+
+    .icerik { padding: 20px; max-width: 800px; margin: 0 auto; }
+
+    /* ── KATEGORİ BÖLÜMÜ ── */
+    .kategori-bolum { margin-bottom: 32px; }
+    .kategori-baslik {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 18px; font-weight: 700; margin-bottom: 16px;
+      padding-bottom: 10px; border-bottom: 2px solid rgba(255,255,255,0.08);
+    }
+    .kategori-ikon-kucuk { font-size: 22px; }
+
+    /* ── ÜRÜN SATIRI ── */
+    .urun-kart {
+      background: #16213e; border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px; padding: 16px; margin-bottom: 10px;
+    }
+    .urun-kart.duzenleniyor { border-color: #e94560; }
+
+    .urun-ozet {
+      display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer;
+    }
+    .urun-ozet-sol { flex: 1; }
+    .urun-ozet-isim { font-size: 15px; font-weight: 600; }
+    .urun-ozet-fiyat { font-size: 16px; font-weight: 800; color: #4ade80; margin-left: 12px; flex-shrink: 0; }
+    .duzenle-btn {
+      background: rgba(255,255,255,0.07); border: none; color: #aaa;
+      padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; margin-left: 10px;
+    }
+
+    .urun-form { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .urun-form.acik { display: block; }
+
+    .form-alan { margin-bottom: 12px; }
+    .form-alan label { display: block; font-size: 12px; color: #888; margin-bottom: 5px; letter-spacing: 0.5px; }
+    .form-input {
+      width: 100%; padding: 10px 12px; background: #0f0f1a;
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+      color: white; font-size: 14px;
+    }
+    .form-input:focus { outline: none; border-color: #e94560; }
+
+    .form-butonlar { display: flex; gap: 8px; margin-top: 14px; }
+    .btn-kaydet {
+      flex: 1; padding: 11px; background: #4ade80; color: #000;
+      border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer;
+    }
+    .btn-sil {
+      padding: 11px 16px; background: rgba(239,68,68,0.15); color: #f87171;
+      border: 1px solid rgba(239,68,68,0.3); border-radius: 10px; font-size: 14px; cursor: pointer;
+    }
+    .btn-iptal {
+      padding: 11px 16px; background: rgba(255,255,255,0.05); color: #aaa;
+      border: none; border-radius: 10px; font-size: 14px; cursor: pointer;
+    }
+
+    /* ── YENİ ÜRÜN ── */
+    .yeni-urun-btn {
+      width: 100%; padding: 13px; margin-top: 4px;
+      background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.15);
+      border-radius: 12px; color: #666; font-size: 14px; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .yeni-urun-btn:hover { background: rgba(255,255,255,0.07); color: #aaa; }
+
+    .yeni-urun-form {
+      display: none; background: #1a2540; border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; padding: 16px; margin-top: 8px;
+    }
+    .yeni-urun-form.acik { display: block; }
+    .yeni-urun-baslik { font-size: 14px; font-weight: 600; margin-bottom: 14px; color: #4ade80; }
+
+    .mesaj {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: #4ade80; color: #000; padding: 12px 24px; border-radius: 12px;
+      font-weight: 700; font-size: 14px; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+      z-index: 999; white-space: nowrap;
+    }
+    .mesaj.goster { opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <!-- GİRİŞ EKRANI -->
+  <div class="giris-ekrani" id="girisEkrani">
+    <div class="giris-kart">
+      <h1>🔐 Menü Yönetimi</h1>
+      <p>Fiyat ve içerik düzenlemek için şifrenizi girin</p>
+      <input class="input" type="password" id="sifreInput" placeholder="Şifre" onkeydown="if(event.key==='Enter') girisYap()">
+      <button class="btn-giris" onclick="girisYap()">Giriş Yap</button>
+      <div class="hata" id="girisHata"></div>
+    </div>
+  </div>
+
+  <!-- YÖNETİM PANELİ -->
+  <div class="panel" id="yonetimPanel">
+    <header>
+      <div class="header-baslik">📋 Menü Yönetimi</div>
+      <button class="btn-cikis" onclick="cikisYap()">Çıkış</button>
+    </header>
+    <div class="icerik" id="menuIcerik">
+      <p style="color:#666;text-align:center;padding:40px">Yükleniyor...</p>
+    </div>
+  </div>
+
+  <div class="mesaj" id="mesaj"></div>
+
+  <script>
+    let sifre = '';
+    let menuData = null;
+
+    // ── GİRİŞ ─────────────────────────────────────
+    async function girisYap() {
+      const s = document.getElementById('sifreInput').value;
+      if (!s) return;
+
+      try {
+        const y = await fetch('/yonetim/giris', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sifre: s })
+        });
+        if (y.ok) {
+          sifre = s;
+          document.getElementById('girisEkrani').style.display = 'none';
+          document.getElementById('yonetimPanel').classList.add('acik');
+          menuyukle();
+        } else {
+          document.getElementById('girisHata').textContent = 'Şifre yanlış';
+        }
+      } catch {
+        document.getElementById('girisHata').textContent = 'Bağlantı hatası';
+      }
+    }
+
+    function cikisYap() {
+      sifre = '';
+      document.getElementById('girisEkrani').style.display = 'flex';
+      document.getElementById('yonetimPanel').classList.remove('acik');
+      document.getElementById('sifreInput').value = '';
+    }
+
+    // ── MENÜ YÜKLE ────────────────────────────────
+    async function menuykle() { await menuyukle(); }
+    async function menuyukle() {
+      try {
+        const y = await fetch('/menu');
+        menuData = await y.json();
+        menuRender();
+      } catch {
+        document.getElementById('menuIcerik').innerHTML = '<p style="color:#f87171;text-align:center;padding:40px">Menü yüklenemedi.</p>';
+      }
+    }
+
+    // ── RENDER ────────────────────────────────────
+    function menuRender() {
+      const icerik = document.getElementById('menuIcerik');
+      icerik.innerHTML = '';
+
+      menuData.kategoriler.forEach(kat => {
+        const bolum = document.createElement('div');
+        bolum.className = 'kategori-bolum';
+        bolum.innerHTML = `
+          <div class="kategori-baslik">
+            <span class="kategori-ikon-kucuk">${kat.ikon}</span>
+            ${kat.isim}
+            <span style="margin-left:auto;font-size:13px;color:#555">${kat.urunler.length} ürün</span>
+          </div>
+        `;
+
+        kat.urunler.forEach(urun => {
+          bolum.appendChild(urunKartOlustur(kat, urun));
+        });
+
+        // Yeni ürün butonu
+        const yeniBtn = document.createElement('button');
+        yeniBtn.className = 'yeni-urun-btn';
+        yeniBtn.textContent = '+ Yeni ürün ekle';
+        yeniBtn.onclick = () => yeniUrunFormAc(kat, bolum, yeniBtn);
+        bolum.appendChild(yeniBtn);
+
+        icerik.appendChild(bolum);
+      });
+    }
+
+    function urunKartOlustur(kat, urun) {
+      const kart = document.createElement('div');
+      kart.className = 'urun-kart';
+      kart.id = `urun-${urun.id}`;
+
+      kart.innerHTML = `
+        <div class="urun-ozet" onclick="formuAcKapat(${urun.id})">
+          <div class="urun-ozet-sol">
+            <div class="urun-ozet-isim">${urun.isim}</div>
+          </div>
+          <div class="urun-ozet-fiyat">${urun.fiyat} ₺</div>
+          <button class="duzenle-btn" onclick="event.stopPropagation();formuAcKapat(${urun.id})">Düzenle</button>
+        </div>
+        <div class="urun-form" id="form-${urun.id}">
+          <div class="form-alan">
+            <label>ÜRÜN ADI</label>
+            <input class="form-input" id="isim-${urun.id}" value="${urun.isim}" placeholder="Ürün adı">
+          </div>
+          <div class="form-alan">
+            <label>AÇIKLAMA (İsteğe bağlı)</label>
+            <input class="form-input" id="aciklama-${urun.id}" value="${urun.aciklama || ''}" placeholder="İçindekiler, notlar...">
+          </div>
+          <div class="form-alan">
+            <label>FİYAT (₺)</label>
+            <input class="form-input" id="fiyat-${urun.id}" type="number" value="${urun.fiyat}" placeholder="0">
+          </div>
+          <div class="form-butonlar">
+            <button class="btn-kaydet" onclick="urunKaydet('${kat.id}', ${urun.id})">✓ Kaydet</button>
+            <button class="btn-iptal" onclick="formuKapat(${urun.id})">İptal</button>
+            <button class="btn-sil" onclick="urunSil('${kat.id}', ${urun.id})">Sil</button>
+          </div>
+        </div>
+      `;
+
+      return kart;
+    }
+
+    function formuAcKapat(id) {
+      const form = document.getElementById(`form-${id}`);
+      const kart = document.getElementById(`urun-${id}`);
+      const acik = form.classList.contains('acik');
+      // Önce tüm formları kapat
+      document.querySelectorAll('.urun-form.acik').forEach(f => {
+        f.classList.remove('acik');
+        f.closest('.urun-kart').classList.remove('duzenleniyor');
+      });
+      if (!acik) {
+        form.classList.add('acik');
+        kart.classList.add('duzenleniyor');
+      }
+    }
+
+    function formuKapat(id) {
+      document.getElementById(`form-${id}`).classList.remove('acik');
+      document.getElementById(`urun-${id}`).classList.remove('duzenleniyor');
+    }
+
+    // ── KAYDET ────────────────────────────────────
+    async function urunKaydet(kategoriId, urunId) {
+      const isim = document.getElementById(`isim-${urunId}`).value.trim();
+      const aciklama = document.getElementById(`aciklama-${urunId}`).value.trim();
+      const fiyat = document.getElementById(`fiyat-${urunId}`).value;
+
+      if (!isim || !fiyat) { mesajGoster('Ürün adı ve fiyat zorunlu', true); return; }
+
+      try {
+        const y = await fetch('/yonetim/urun-guncelle', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sifre, kategoriId, urunId, isim, aciklama, fiyat })
+        });
+        if (y.ok) {
+          await menuykle();
+          mesajGoster('Kaydedildi ✓');
+        } else {
+          mesajGoster('Hata oluştu', true);
+        }
+      } catch { mesajGoster('Bağlantı hatası', true); }
+    }
+
+    // ── SİL ───────────────────────────────────────
+    async function urunSil(kategoriId, urunId) {
+      if (!confirm('Bu ürünü silmek istediğinizden emin misiniz?')) return;
+      try {
+        const y = await fetch('/yonetim/urun-sil', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sifre, kategoriId, urunId })
+        });
+        if (y.ok) {
+          await menuykle();
+          mesajGoster('Ürün silindi');
+        }
+      } catch { mesajGoster('Bağlantı hatası', true); }
+    }
+
+    // ── YENİ ÜRÜN ─────────────────────────────────
+    function yeniUrunFormAc(kat, bolum, btn) {
+      let form = bolum.querySelector('.yeni-urun-form');
+      if (!form) {
+        form = document.createElement('div');
+        form.className = 'yeni-urun-form';
+        form.innerHTML = `
+          <div class="yeni-urun-baslik">+ Yeni Ürün — ${kat.isim}</div>
+          <div class="form-alan">
+            <label>ÜRÜN ADI</label>
+            <input class="form-input" id="yeni-isim-${kat.id}" placeholder="Ürün adı">
+          </div>
+          <div class="form-alan">
+            <label>AÇIKLAMA (İsteğe bağlı)</label>
+            <input class="form-input" id="yeni-aciklama-${kat.id}" placeholder="İçindekiler, notlar...">
+          </div>
+          <div class="form-alan">
+            <label>FİYAT (₺)</label>
+            <input class="form-input" id="yeni-fiyat-${kat.id}" type="number" placeholder="0">
+          </div>
+          <div class="form-butonlar">
+            <button class="btn-kaydet" onclick="yeniUrunEkle('${kat.id}')">+ Ekle</button>
+            <button class="btn-iptal" onclick="this.closest('.yeni-urun-form').classList.remove('acik')">İptal</button>
+          </div>
+        `;
+        btn.after(form);
+      }
+      form.classList.add('acik');
+      form.querySelector(`#yeni-isim-${kat.id}`)?.focus();
+    }
+
+    async function yeniUrunEkle(kategoriId) {
+      const isim = document.getElementById(`yeni-isim-${kategoriId}`).value.trim();
+      const aciklama = document.getElementById(`yeni-aciklama-${kategoriId}`).value.trim();
+      const fiyat = document.getElementById(`yeni-fiyat-${kategoriId}`).value;
+
+      if (!isim || !fiyat) { mesajGoster('Ürün adı ve fiyat zorunlu', true); return; }
+
+      try {
+        const y = await fetch('/yonetim/urun-ekle', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sifre, kategoriId, isim, aciklama, fiyat })
+        });
+        if (y.ok) {
+          await menuykle();
+          mesajGoster('Ürün eklendi ✓');
+        } else {
+          mesajGoster('Hata oluştu', true);
+        }
+      } catch { mesajGoster('Bağlantı hatası', true); }
+    }
+
+    // ── MESAJ ─────────────────────────────────────
+    function mesajGoster(metin, hata = false) {
+      const el = document.getElementById('mesaj');
+      el.textContent = metin;
+      el.style.background = hata ? '#f87171' : '#4ade80';
+      el.style.color = hata ? 'white' : '#000';
+      el.classList.add('goster');
+      setTimeout(() => el.classList.remove('goster'), 2500);
+    }
+  </script>
+</body>
+</html>
