@@ -160,6 +160,35 @@
 
   <div class="mesaj" id="mesaj"></div>
 
+  <!-- KALICI KAYDET MODALI -->
+  <div id="kaliciModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;align-items:center;justify-content:center;padding:20px">
+    <div style="background:#16213e;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px;max-width:420px;width:100%">
+      <div style="font-size:22px;font-weight:800;margin-bottom:8px">💾 Kalıcı Kaydet</div>
+      <div style="color:#aaa;font-size:14px;margin-bottom:20px">menu.json bilgisayarınıza indirildi. Değişikliklerin kalıcı olması için GitHub'a yükleyin:</div>
+      <div style="background:#0f0f1a;border-radius:12px;padding:16px;margin-bottom:20px">
+        <div style="color:#4ade80;font-size:13px;font-weight:700;margin-bottom:10px">Adımlar:</div>
+        <div style="font-size:13px;line-height:2;color:#ccc">
+          1. Aşağıdaki "GitHub'ı Aç" butonuna tıklayın<br>
+          2. Sayfada sağ üstteki kalem (✏️) ikonuna tıklayın<br>
+          3. Tüm metni seçin (Ctrl+A) ve silin<br>
+          4. İndirilen menu.json dosyasını Notepad ile açın<br>
+          5. İçeriği kopyalayıp GitHub'a yapıştırın<br>
+          6. "Commit changes" butonuna tıklayın
+        </div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <a href="https://github.com/caferyuce34-ai/garson-sistemi/edit/main/menu.json" target="_blank"
+           style="flex:1;padding:13px;background:#4ade80;color:#000;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none">
+          GitHub'ı Aç ↗
+        </a>
+        <button onclick="document.getElementById('kaliciModal').style.display='none'"
+                style="padding:13px 18px;background:rgba(255,255,255,0.07);color:#aaa;border:none;border-radius:10px;font-size:14px;cursor:pointer">
+          Kapat
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let sifre = '';
     let menuData = null;
@@ -387,30 +416,16 @@
       } catch { mesajGoster('Bağlantı hatası', true); }
     }
 
-    // ── KALICI KAYDET (GitHub) ────────────────────
-    async function githubKaydet() {
-      const btn = document.getElementById('kaliciBtn');
-      btn.disabled = true;
-      btn.textContent = 'Kaydediliyor...';
-      try {
-        const y = await fetch('/yonetim/github-kaydet', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sifre })
-        });
-        const veri = await y.json();
-        if (y.ok) {
-          mesajGoster('GitHub\'a kaydedildi! Değişiklikler 1-2 dk içinde yayına girer ✓');
-        } else if (veri.hata === 'GITHUB_TOKEN_YOK') {
-          mesajGoster('Render\'a GITHUB_TOKEN eklenmemiş — kurulum tamamlanmamış', true);
-        } else {
-          mesajGoster('Hata: ' + (veri.hata || 'Bilinmiyor'), true);
-        }
-      } catch {
-        mesajGoster('Bağlantı hatası', true);
-      }
-      btn.disabled = false;
-      btn.textContent = '💾 Kalıcı Kaydet';
+    // ── KALICI KAYDET (GitHub'a manuel yükleme) ──
+    function githubKaydet() {
+      // Güncel menüyü dosya olarak indir
+      const a = document.createElement('a');
+      a.href = '/yonetim/menu-indir?sifre=' + encodeURIComponent(sifre);
+      a.download = 'menu.json';
+      a.click();
+
+      // Talimat modalını göster
+      document.getElementById('kaliciModal').style.display = 'flex';
     }
 
     // ── MESAJ ─────────────────────────────────────
