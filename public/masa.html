@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Masa</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: white;
+      min-height: 100vh;
+    }
+
+    /* ── ANA EKRAN ── */
+    .ana-ekran {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .kart {
+      text-align: center;
+      padding: 40px 28px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      max-width: 340px;
+      width: 100%;
+    }
+    .logo { font-size: 52px; margin-bottom: 6px; }
+    .etiket { font-size: 12px; color: #888; letter-spacing: 2px; text-transform: uppercase; }
+    .masa-no { font-size: 66px; font-weight: 800; line-height: 1; margin-bottom: 30px; }
+
+    .butonlar { display: flex; gap: 10px; }
+    .btn {
+      flex: 1; padding: 18px 10px; font-size: 16px; font-weight: 700;
+      border: none; border-radius: 16px; cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .btn:active { transform: scale(0.96); }
+    .btn-cagir {
+      background: linear-gradient(135deg, #e94560, #c23152);
+      color: white; box-shadow: 0 8px 25px rgba(233,69,96,0.4);
+    }
+    .btn-cagir:disabled { background: #333; box-shadow: none; cursor: default; }
+    .btn-menu {
+      background: linear-gradient(135deg, #1f3460, #16213e);
+      color: white; border: 1px solid rgba(255,255,255,0.15);
+    }
+    .basarili-alan { display: none; margin-top: 12px; }
+    .basarili-icon { font-size: 52px; margin-bottom: 8px; }
+    .basarili-metin { font-size: 16px; font-weight: 600; color: #4ade80; }
+    .alt-metin { font-size: 13px; color: #666; margin-top: 4px; }
+    .hata-metin { margin-top: 12px; font-size: 13px; color: #f87171; min-height: 18px; }
+
+    /* ── MENÜ OVERLAY ── */
+    .menu-overlay {
+      display: none; position: fixed; inset: 0;
+      background: #0d0d1a; z-index: 100; flex-direction: column;
+    }
+    .menu-overlay.acik { display: flex; }
+
+    .menu-header {
+      background: #16213e;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 14px 18px;
+      display: flex; align-items: center; gap: 12px;
+      flex-shrink: 0;
+    }
+    .geri-btn {
+      background: rgba(255,255,255,0.08); border: none; color: white;
+      width: 36px; height: 36px; border-radius: 10px; font-size: 20px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .menu-baslik { font-size: 17px; font-weight: 700; }
+    .menu-altbaslik { font-size: 11px; color: #555; margin-top: 1px; }
+
+    .menu-icerik { flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
+
+    /* ── KATEGORİ GRİD ── */
+    .kategori-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .kategori-kart {
+      border-radius: 16px; padding: 24px 12px;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      cursor: pointer; transition: transform 0.15s; border: none;
+      color: white; text-align: center;
+    }
+    .kategori-kart:active { transform: scale(0.96); }
+    .kategori-ikon { font-size: 36px; }
+    .kategori-isim { font-size: 14px; font-weight: 700; line-height: 1.3; }
+
+    /* ── ÜRÜN LİSTESİ ── */
+    .urun-listesi { display: flex; flex-direction: column; }
+    .urun-satir {
+      padding: 16px 4px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+    }
+    .urun-satir:last-child { border-bottom: none; }
+    .urun-sol { flex: 1; }
+    .urun-isim { font-size: 15px; font-weight: 600; color: #e0e0e0; line-height: 1.3; }
+    .urun-aciklama { font-size: 12px; color: #666; margin-top: 4px; line-height: 1.4; font-style: italic; }
+    .urun-fiyat { font-size: 16px; font-weight: 800; white-space: nowrap; flex-shrink: 0; }
+
+    .yukluyor { text-align: center; padding: 60px 20px; color: #555; font-size: 15px; }
+  </style>
+</head>
+<body>
+
+  <div class="ana-ekran">
+    <div class="kart">
+      <div class="logo">🪑</div>
+      <div class="etiket">Masa</div>
+      <div class="masa-no" id="masaNo">—</div>
+      <div class="butonlar">
+        <button class="btn btn-cagir" id="cagirBtn" onclick="garsonCagir()">🔔 Garson</button>
+        <button class="btn btn-menu" onclick="menuAc()">📋 Menü</button>
+      </div>
+      <div class="basarili-alan" id="basariliAlan">
+        <div class="basarili-icon">✅</div>
+        <div class="basarili-metin">Garsonunuz geliyor!</div>
+        <div class="alt-metin">En kısa sürede masanıza gelecektir.</div>
+      </div>
+      <div class="hata-metin" id="hataMetin"></div>
+    </div>
+  </div>
+
+  <div class="menu-overlay" id="menuOverlay">
+    <div class="menu-header">
+      <button class="geri-btn" id="geriBtn" onclick="geriGit()">‹</button>
+      <div>
+        <div class="menu-baslik" id="menuBaslik">Menü</div>
+        <div class="menu-altbaslik" id="menuAltbaslik">Zeyrekhane</div>
+      </div>
+    </div>
+    <div class="menu-icerik" id="menuIcerik">
+      <div class="yukluyor">Yükleniyor...</div>
+    </div>
+  </div>
+
+  <script>
+    const parcalar = window.location.pathname.split('/');
+    const masaNo = parseInt(parcalar[parcalar.length - 1]);
+    document.getElementById('masaNo').textContent = isNaN(masaNo) ? '?' : masaNo;
+
+    // ── GARSON ÇAĞIR ─────────────────────────────
+    let cagirildi = false;
+    async function garsonCagir() {
+      if (cagirildi || isNaN(masaNo)) return;
+      cagirildi = true;
+      const btn = document.getElementById('cagirBtn');
+      btn.disabled = true;
+      btn.textContent = '...';
+      document.getElementById('hataMetin').textContent = '';
+      try {
+        const y = await fetch('/cagir/' + masaNo, { method: 'POST' });
+        if (y.ok) {
+          btn.style.display = 'none';
+          document.getElementById('basariliAlan').style.display = 'block';
+        } else throw new Error();
+      } catch {
+        cagirildi = false;
+        btn.disabled = false;
+        btn.innerHTML = '🔔 Garson';
+        document.getElementById('hataMetin').textContent = 'Bağlantı hatası, tekrar deneyin.';
+      }
+    }
+
+    // ── MENÜ ─────────────────────────────────────
+    let menuData = null;
+    let gorunum = 'kategoriler';
+
+    async function menuAc() {
+      document.getElementById('menuOverlay').classList.add('acik');
+      if (!menuData) {
+        document.getElementById('menuIcerik').innerHTML = '<div class="yukluyor">Yükleniyor...</div>';
+        try {
+          const y = await fetch('/menu');
+          menuData = await y.json();
+        } catch {
+          document.getElementById('menuIcerik').innerHTML = '<div class="yukluyor">Menü yüklenemedi.</div>';
+          return;
+        }
+      }
+      kategoriGoster();
+    }
+
+    function geriGit() {
+      if (gorunum === 'urunler') {
+        kategoriGoster();
+      } else {
+        document.getElementById('menuOverlay').classList.remove('acik');
+      }
+    }
+
+    function kategoriGoster() {
+      gorunum = 'kategoriler';
+      document.getElementById('menuBaslik').textContent = 'Menü';
+      document.getElementById('menuAltbaslik').textContent = menuData.restoranAdi || 'Zeyrekhane';
+      document.getElementById('geriBtn').innerHTML = '✕';
+
+      const icerik = document.getElementById('menuIcerik');
+      icerik.scrollTop = 0;
+
+      const grid = document.createElement('div');
+      grid.className = 'kategori-grid';
+
+      menuData.kategoriler.forEach(kat => {
+        const kart = document.createElement('button');
+        kart.className = 'kategori-kart';
+        kart.style.background = `linear-gradient(135deg, ${kat.renk}cc, ${kat.renk}88)`;
+        kart.innerHTML = `
+          <div class="kategori-ikon">${kat.ikon}</div>
+          <div class="kategori-isim">${kat.isim}</div>
+        `;
+        kart.onclick = () => urunGoster(kat);
+        grid.appendChild(kart);
+      });
+
+      icerik.innerHTML = '';
+      icerik.appendChild(grid);
+    }
+
+    function urunGoster(kat) {
+      gorunum = 'urunler';
+      document.getElementById('menuBaslik').textContent = kat.isim;
+      document.getElementById('menuAltbaslik').textContent = `${kat.urunler.length} ürün`;
+      document.getElementById('geriBtn').innerHTML = '‹';
+
+      const icerik = document.getElementById('menuIcerik');
+      icerik.scrollTop = 0;
+
+      const liste = document.createElement('div');
+      liste.className = 'urun-listesi';
+
+      kat.urunler.forEach(u => {
+        const satir = document.createElement('div');
+        satir.className = 'urun-satir';
+        satir.innerHTML = `
+          <div class="urun-sol">
+            <div class="urun-isim">${u.isim}</div>
+            ${u.aciklama ? `<div class="urun-aciklama">${u.aciklama}</div>` : ''}
+          </div>
+          <div class="urun-fiyat" style="color:${kat.renk === '#4e342e' ? '#ff8a65' : adjustColor(kat.renk)}">${u.fiyat} ₺</div>
+        `;
+        liste.appendChild(satir);
+      });
+
+      icerik.innerHTML = '';
+      icerik.appendChild(liste);
+    }
+
+    function adjustColor(hex) {
+      // Koyu renkleri açık tona çevir (okunabilirlik için)
+      return hex;
+    }
+  </script>
+</body>
+</html>
