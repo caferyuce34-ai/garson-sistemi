@@ -1,0 +1,123 @@
+{
+  "restoranAdi": "Zeyrekhane",
+  "kategoriler": [
+    {
+      "id": "gune-baslarken",
+      "isim": "Güne Başlarken",
+      "ikon": "🍳",
+      "renk": "#d35400",
+      "urunler": [
+        {"id": 1, "isim": "Kahvaltı Tabağı", "aciklama": "Haşlama Yumurta, Tereyağı, Bal, Reçel, Y. Zeytin, S. Zeytin, B. Peynir, Acuka, Çeri Domates, Salatalık, 2 Bardak Çay", "fiyat": 370},
+        {"id": 2, "isim": "Menemen", "aciklama": "Domates, Yumurta, Yeşil Biber, Kuru Kaşar Peyniri", "fiyat": 140},
+        {"id": 3, "isim": "Sade Omlet", "aciklama": "", "fiyat": 100},
+        {"id": 4, "isim": "Peynirli Omlet", "aciklama": "", "fiyat": 140},
+        {"id": 5, "isim": "Karışık Omlet", "aciklama": "Sucuk, Kırmızı Biber, Yeşil Biber, Kaşar Peynir", "fiyat": 140},
+        {"id": 6, "isim": "Sahanda Yumurta", "aciklama": "", "fiyat": 110},
+        {"id": 7, "isim": "Sucuklu Yumurta", "aciklama": "", "fiyat": 160},
+        {"id": 8, "isim": "Patates Tava", "aciklama": "", "fiyat": 110}
+      ]
+    },
+    {
+      "id": "ana-yemekler",
+      "isim": "Ana Yemekler",
+      "ikon": "🍽️",
+      "renk": "#7b1fa2",
+      "urunler": [
+        {"id": 9,  "isim": "Piliç Pirzola",      "aciklama": "", "fiyat": 380},
+        {"id": 10, "isim": "Izgara Köfte",        "aciklama": "", "fiyat": 380},
+        {"id": 11, "isim": "Piliç Kavurma",       "aciklama": "", "fiyat": 370},
+        {"id": 12, "isim": "Beğendili Piliç",     "aciklama": "", "fiyat": 370},
+        {"id": 13, "isim": "Beğendili Kavurma",   "aciklama": "", "fiyat": 485},
+        {"id": 14, "isim": "Çoban Kavurma",       "aciklama": "", "fiyat": 470},
+        {"id": 15, "isim": "Köri Soslu Tavuk",    "aciklama": "", "fiyat": 370}
+      ]
+    },
+    {
+      "id": "corbalar",
+      "isim": "Çorbalar",
+      "ikon": "🍲",
+      "renk": "#e65100",
+      "urunler": [
+        {"id": 16, "isim": "Günün Çorbası", "aciklama": "", "fiyat": 85},
+        {"id": 17, "isim": "Sebze Çorbası", "aciklama": "", "fiyat": 130}
+      ]
+    },
+    {
+      "id": "salatalar",
+      "isim": "Salatalar",
+      "ikon": "🥗",
+      "renk": "#2e7d32",
+      "urunler": [
+        {"id": 18, "isim": "Çoban Salatası",  "aciklama": "", "fiyat": 100},
+        {"id": 19, "isim": "Mevsim Salatası", "aciklama": "", "fiyat": 100}
+      ]
+    },
+    {
+      "id": "baslangiclar",
+      "isim": "Başlangıçlar",
+      "ikon": "🥪",
+      "renk": "#c62828",
+      "urunler": [
+        {"id": 20, "isim": "Mantı",           "aciklama": "Un, Süt, Tuz, Sıvıyağı, Yumurta, İç Harcı: Et, Karabiber, Tuz", "fiyat": 290},
+        {"id": 21, "isim": "Kızarmış Mantı",  "aciklama": "Un, Süt, Tuz, Sıvıyağı, Yumurta, İç Harcı: Et, Karabiber, Tuz", "fiyat": 315},
+        {"id": 22, "isim": "Combo Tabağı",    "aciklama": "Sigara Böreği, Soğan Halkası, Kroket, Sosis, Patates ve Soslar ile Servis Yapılır.", "fiyat": 270},
+        {"id": 23, "isim": "Patates Tava",    "aciklama": "", "fiyat": 100},
+        {"id": 24, "isim": "Paçanga Böreği",  "aciklama": "", "fiyat": 140},
+        {"id": 25, "isim": "Pizza",           "aciklama": "Akdeniz Pizza", "fiyat": 270}
+      ]
+    },
+    {
+      "id": "sicak-icecekler",
+      "isim": "Sıcak İçecekler",
+      "ikon": "☕",
+      "renk": "#4e342e",
+      "urunler": [
+        {"id": 26, "isim": "Latte",         "aciklama": "", "fiyat": 110},
+        {"id": 27, "isim": "Kapucino",      "aciklama": "", "fiyat": 120},
+        {"id": 28, "isim": "Filtre Kahve",  "aciklama": "", "fiyat": 90},
+        {"id": 29, "isim": "Türk Kahvesi",  "aciklama": "", "fiyat": 90},
+        {"id": 30, "isim": "Bitki Çayları", "aciklama": "", "fiyat": 45},
+        {"id": 31, "isim": "Fincan Çayı",   "aciklama": "", "fiyat": 40}
+      ]
+    },
+    {
+      "id": "soguk-icecekler",
+      "isim": "Soğuk İçecekler",
+      "ikon": "🥤",
+      "renk": "#01579b",
+      "urunler": [
+        {"id": 32, "isim": "Ayran",          "aciklama": "", "fiyat": 50},
+        {"id": 33, "isim": "Sade Soda",      "aciklama": "", "fiyat": 35},
+        {"id": 34, "isim": "Meyveli Soda",   "aciklama": "Limonlu", "fiyat": 40},
+        {"id": 35, "isim": "Kutu Meşrubat",  "aciklama": "Cola, Fanta, Soğukçay", "fiyat": 55},
+        {"id": 36, "isim": "Su",             "aciklama": "", "fiyat": 25}
+      ]
+    },
+    {
+      "id": "tatlilar",
+      "isim": "Tatlılar",
+      "ikon": "🍰",
+      "renk": "#ad1457",
+      "urunler": [
+        {"id": 37, "isim": "Sütlaç",                           "aciklama": "", "fiyat": 160},
+        {"id": 38, "isim": "Künefe",                           "aciklama": "", "fiyat": 180},
+        {"id": 39, "isim": "Fıstıklı Katmer",                  "aciklama": "", "fiyat": 200},
+        {"id": 40, "isim": "Kabak Tatlısı",                    "aciklama": "Tahin ve Ceviz ile Servis Edilir.", "fiyat": 210},
+        {"id": 41, "isim": "Profiterollü Mono Siyah Ice Pasta","aciklama": "Sıcak Çikolato ve Kenarları Çikolata Kaplıdır.", "fiyat": 170},
+        {"id": 42, "isim": "Lotus Cheesecake",                 "aciklama": "", "fiyat": 170},
+        {"id": 43, "isim": "Gökkuşağı Pasta",                  "aciklama": "", "fiyat": 170},
+        {"id": 44, "isim": "Çikolatam",                        "aciklama": "Karamilize Edilmiş Süt, Kakao, Bal, Fındık ve Cevizden Oluşmaktadır.", "fiyat": 170},
+        {"id": 45, "isim": "Profiterollü Mono Beyaz Ice Pasta","aciklama": "Beyaz Çikolata ve Kenarları Çikolata Kaplıdır.", "fiyat": 170},
+        {"id": 46, "isim": "Limonlu Cheesecake",               "aciklama": "Tereyağı, Bisküvi, Limon Sos, Fırınlanmış Cheesecake Peyniri, Doğal Krema", "fiyat": 170},
+        {"id": 47, "isim": "Frambuazlı Cheesecake",            "aciklama": "Özel Hazırlanmış Frambuaz Sos, Labne Peyniri ve Burçak Bisküvii tabanından oluşmaktadır.", "fiyat": 170},
+        {"id": 48, "isim": "Tiramisu Kare Ice Pasta",          "aciklama": "Krema Özel Tiramisu Sosu ve Kahve Tazından oluşmaktadır.", "fiyat": 170},
+        {"id": 49, "isim": "Fıstıklım",                        "aciklama": "Karamelize Edilmiş Süt, Bal ve Antep Fıstığından Oluşmaktadır.", "fiyat": 170},
+        {"id": 50, "isim": "Bella Vista Ice Pasta",            "aciklama": "Siyah Çikolata ve Frambuazdan Oluşmaktadır.", "fiyat": 170},
+        {"id": 51, "isim": "Latte Mono Pasta",                 "aciklama": "Latte Sos (Kahve Sosu) Bulunmaktadır.", "fiyat": 170},
+        {"id": 52, "isim": "Fıstık Dünyası",                   "aciklama": "", "fiyat": 170},
+        {"id": 53, "isim": "Dubai Çikolatalı Pasta",           "aciklama": "", "fiyat": 170},
+        {"id": 54, "isim": "Magnolia",                         "aciklama": "", "fiyat": 185}
+      ]
+    }
+  ]
+}
