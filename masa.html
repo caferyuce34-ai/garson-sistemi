@@ -1,369 +1,123 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Masa</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-      color: white;
-      min-height: 100vh;
+{
+  "restoranAdi": "Zeyrekhane",
+  "kategoriler": [
+    {
+      "id": "gune-baslarken",
+      "isim": "Güne Başlarken",
+      "ikon": "🍳",
+      "renk": "#d35400",
+      "urunler": [
+        {"id": 1, "isim": "Kahvaltı Tabağı", "aciklama": "Haşlama Yumurta, Tereyağı, Bal, Reçel, Y. Zeytin, S. Zeytin, B. Peynir, Acuka, Çeri Domates, Salatalık, 2 Bardak Çay", "fiyat": 370},
+        {"id": 2, "isim": "Menemen", "aciklama": "Domates, Yumurta, Yeşil Biber, Kuru Kaşar Peyniri", "fiyat": 140},
+        {"id": 3, "isim": "Sade Omlet", "aciklama": "", "fiyat": 100},
+        {"id": 4, "isim": "Peynirli Omlet", "aciklama": "", "fiyat": 140},
+        {"id": 5, "isim": "Karışık Omlet", "aciklama": "Sucuk, Kırmızı Biber, Yeşil Biber, Kaşar Peynir", "fiyat": 140},
+        {"id": 6, "isim": "Sahanda Yumurta", "aciklama": "", "fiyat": 110},
+        {"id": 7, "isim": "Sucuklu Yumurta", "aciklama": "", "fiyat": 160},
+        {"id": 8, "isim": "Patates Tava", "aciklama": "", "fiyat": 110}
+      ]
+    },
+    {
+      "id": "ana-yemekler",
+      "isim": "Ana Yemekler",
+      "ikon": "🍽️",
+      "renk": "#7b1fa2",
+      "urunler": [
+        {"id": 9,  "isim": "Piliç Pirzola",      "aciklama": "", "fiyat": 380},
+        {"id": 10, "isim": "Izgara Köfte",        "aciklama": "", "fiyat": 380},
+        {"id": 11, "isim": "Piliç Kavurma",       "aciklama": "", "fiyat": 370},
+        {"id": 12, "isim": "Beğendili Piliç",     "aciklama": "", "fiyat": 370},
+        {"id": 13, "isim": "Beğendili Kavurma",   "aciklama": "", "fiyat": 485},
+        {"id": 14, "isim": "Çoban Kavurma",       "aciklama": "", "fiyat": 470},
+        {"id": 15, "isim": "Köri Soslu Tavuk",    "aciklama": "", "fiyat": 370}
+      ]
+    },
+    {
+      "id": "corbalar",
+      "isim": "Çorbalar",
+      "ikon": "🍲",
+      "renk": "#e65100",
+      "urunler": [
+        {"id": 16, "isim": "Günün Çorbası", "aciklama": "", "fiyat": 85},
+        {"id": 17, "isim": "Sebze Çorbası", "aciklama": "", "fiyat": 130}
+      ]
+    },
+    {
+      "id": "salatalar",
+      "isim": "Salatalar",
+      "ikon": "🥗",
+      "renk": "#2e7d32",
+      "urunler": [
+        {"id": 18, "isim": "Çoban Salatası",  "aciklama": "", "fiyat": 100},
+        {"id": 19, "isim": "Mevsim Salatası", "aciklama": "", "fiyat": 100}
+      ]
+    },
+    {
+      "id": "baslangiclar",
+      "isim": "Başlangıçlar",
+      "ikon": "🥪",
+      "renk": "#c62828",
+      "urunler": [
+        {"id": 20, "isim": "Mantı",           "aciklama": "Un, Süt, Tuz, Sıvıyağı, Yumurta, İç Harcı: Et, Karabiber, Tuz", "fiyat": 290},
+        {"id": 21, "isim": "Kızarmış Mantı",  "aciklama": "Un, Süt, Tuz, Sıvıyağı, Yumurta, İç Harcı: Et, Karabiber, Tuz", "fiyat": 315},
+        {"id": 22, "isim": "Combo Tabağı",    "aciklama": "Sigara Böreği, Soğan Halkası, Kroket, Sosis, Patates ve Soslar ile Servis Yapılır.", "fiyat": 270},
+        {"id": 23, "isim": "Patates Tava",    "aciklama": "", "fiyat": 100},
+        {"id": 24, "isim": "Paçanga Böreği",  "aciklama": "", "fiyat": 140},
+        {"id": 25, "isim": "Pizza",           "aciklama": "Akdeniz Pizza", "fiyat": 270}
+      ]
+    },
+    {
+      "id": "sicak-icecekler",
+      "isim": "Sıcak İçecekler",
+      "ikon": "☕",
+      "renk": "#4e342e",
+      "urunler": [
+        {"id": 26, "isim": "Latte",         "aciklama": "", "fiyat": 110},
+        {"id": 27, "isim": "Kapucino",      "aciklama": "", "fiyat": 120},
+        {"id": 28, "isim": "Filtre Kahve",  "aciklama": "", "fiyat": 90},
+        {"id": 29, "isim": "Türk Kahvesi",  "aciklama": "", "fiyat": 90},
+        {"id": 30, "isim": "Bitki Çayları", "aciklama": "", "fiyat": 45},
+        {"id": 31, "isim": "Fincan Çayı",   "aciklama": "", "fiyat": 40}
+      ]
+    },
+    {
+      "id": "soguk-icecekler",
+      "isim": "Soğuk İçecekler",
+      "ikon": "🥤",
+      "renk": "#01579b",
+      "urunler": [
+        {"id": 32, "isim": "Ayran",          "aciklama": "", "fiyat": 50},
+        {"id": 33, "isim": "Sade Soda",      "aciklama": "", "fiyat": 35},
+        {"id": 34, "isim": "Meyveli Soda",   "aciklama": "Limonlu", "fiyat": 40},
+        {"id": 35, "isim": "Kutu Meşrubat",  "aciklama": "Cola, Fanta, Soğukçay", "fiyat": 55},
+        {"id": 36, "isim": "Su",             "aciklama": "", "fiyat": 25}
+      ]
+    },
+    {
+      "id": "tatlilar",
+      "isim": "Tatlılar",
+      "ikon": "🍰",
+      "renk": "#ad1457",
+      "urunler": [
+        {"id": 37, "isim": "Sütlaç",                           "aciklama": "", "fiyat": 160},
+        {"id": 38, "isim": "Künefe",                           "aciklama": "", "fiyat": 180},
+        {"id": 39, "isim": "Fıstıklı Katmer",                  "aciklama": "", "fiyat": 200},
+        {"id": 40, "isim": "Kabak Tatlısı",                    "aciklama": "Tahin ve Ceviz ile Servis Edilir.", "fiyat": 210},
+        {"id": 41, "isim": "Profiterollü Mono Siyah Ice Pasta","aciklama": "Sıcak Çikolato ve Kenarları Çikolata Kaplıdır.", "fiyat": 170},
+        {"id": 42, "isim": "Lotus Cheesecake",                 "aciklama": "", "fiyat": 170},
+        {"id": 43, "isim": "Gökkuşağı Pasta",                  "aciklama": "", "fiyat": 170},
+        {"id": 44, "isim": "Çikolatam",                        "aciklama": "Karamilize Edilmiş Süt, Kakao, Bal, Fındık ve Cevizden Oluşmaktadır.", "fiyat": 170},
+        {"id": 45, "isim": "Profiterollü Mono Beyaz Ice Pasta","aciklama": "Beyaz Çikolata ve Kenarları Çikolata Kaplıdır.", "fiyat": 170},
+        {"id": 46, "isim": "Limonlu Cheesecake",               "aciklama": "Tereyağı, Bisküvi, Limon Sos, Fırınlanmış Cheesecake Peyniri, Doğal Krema", "fiyat": 170},
+        {"id": 47, "isim": "Frambuazlı Cheesecake",            "aciklama": "Özel Hazırlanmış Frambuaz Sos, Labne Peyniri ve Burçak Bisküvii tabanından oluşmaktadır.", "fiyat": 170},
+        {"id": 48, "isim": "Tiramisu Kare Ice Pasta",          "aciklama": "Krema Özel Tiramisu Sosu ve Kahve Tazından oluşmaktadır.", "fiyat": 170},
+        {"id": 49, "isim": "Fıstıklım",                        "aciklama": "Karamelize Edilmiş Süt, Bal ve Antep Fıstığından Oluşmaktadır.", "fiyat": 170},
+        {"id": 50, "isim": "Bella Vista Ice Pasta",            "aciklama": "Siyah Çikolata ve Frambuazdan Oluşmaktadır.", "fiyat": 170},
+        {"id": 51, "isim": "Latte Mono Pasta",                 "aciklama": "Latte Sos (Kahve Sosu) Bulunmaktadır.", "fiyat": 170},
+        {"id": 52, "isim": "Fıstık Dünyası",                   "aciklama": "", "fiyat": 170},
+        {"id": 53, "isim": "Dubai Çikolatalı Pasta",           "aciklama": "", "fiyat": 170},
+        {"id": 54, "isim": "Magnolia",                         "aciklama": "", "fiyat": 185}
+      ]
     }
-
-    /* ── ANA EKRAN ── */
-    .ana-ekran {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .kart {
-      text-align: center;
-      padding: 40px 30px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      max-width: 340px;
-      width: 100%;
-    }
-
-    .logo { font-size: 56px; margin-bottom: 6px; }
-    .etiket { font-size: 13px; color: #888; letter-spacing: 2px; text-transform: uppercase; }
-    .masa-no { font-size: 68px; font-weight: 800; line-height: 1; margin-bottom: 32px; }
-
-    .butonlar { display: flex; gap: 12px; }
-
-    .btn {
-      flex: 1;
-      padding: 18px 10px;
-      font-size: 16px;
-      font-weight: 700;
-      border: none;
-      border-radius: 16px;
-      cursor: pointer;
-      transition: transform 0.1s, box-shadow 0.1s;
-      letter-spacing: 0.3px;
-    }
-
-    .btn:active { transform: scale(0.96); }
-
-    .btn-cagir {
-      background: linear-gradient(135deg, #e94560, #c23152);
-      color: white;
-      box-shadow: 0 8px 25px rgba(233,69,96,0.4);
-    }
-
-    .btn-cagir:disabled { background: #333; box-shadow: none; cursor: default; }
-
-    .btn-menu {
-      background: linear-gradient(135deg, #1f3460, #16213e);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.15);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    }
-
-    .basarili-alan { display: none; margin-top: 10px; }
-    .basarili-icon { font-size: 56px; margin-bottom: 10px; }
-    .basarili-metin { font-size: 17px; font-weight: 600; color: #4ade80; margin-bottom: 6px; }
-    .alt-metin { font-size: 13px; color: #666; }
-    .hata-metin { margin-top: 14px; font-size: 13px; color: #f87171; min-height: 18px; }
-
-    /* ── MENÜ OVERLAY ── */
-    .menu-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: #0f0f1a;
-      z-index: 100;
-      flex-direction: column;
-    }
-
-    .menu-overlay.acik { display: flex; }
-
-    .menu-header {
-      background: #16213e;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-shrink: 0;
-    }
-
-    .geri-btn {
-      background: rgba(255,255,255,0.08);
-      border: none;
-      color: white;
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      font-size: 18px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .menu-baslik { font-size: 18px; font-weight: 700; }
-    .menu-altbaslik { font-size: 12px; color: #666; margin-top: 1px; }
-
-    .menu-icerik {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    /* ── KATEGORİLER ── */
-    .kategori-listesi { display: flex; flex-direction: column; gap: 12px; }
-
-    .kategori-kart {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-
-    .kategori-kart:active { background: rgba(255,255,255,0.1); }
-
-    .kategori-icon { font-size: 36px; }
-
-    .kategori-isim { font-size: 18px; font-weight: 600; }
-    .kategori-ok { margin-left: auto; font-size: 20px; color: #555; }
-
-    .yukluyor {
-      text-align: center;
-      padding: 60px 20px;
-      color: #666;
-      font-size: 15px;
-    }
-
-    .bos-mesaj {
-      text-align: center;
-      padding: 60px 20px;
-      color: #555;
-    }
-
-    .bos-mesaj .bos-icon { font-size: 48px; margin-bottom: 12px; }
-    .bos-mesaj p { font-size: 15px; }
-
-    /* ── RESİMLER ── */
-    .resim-listesi { display: flex; flex-direction: column; gap: 16px; }
-
-    .menu-resim {
-      width: 100%;
-      border-radius: 14px;
-      display: block;
-      background: #1a1a2e;
-    }
-  </style>
-</head>
-<body>
-
-  <!-- ANA EKRAN -->
-  <div class="ana-ekran">
-    <div class="kart">
-      <div class="logo">🪑</div>
-      <div class="etiket">Masa</div>
-      <div class="masa-no" id="masaNo">—</div>
-
-      <div class="butonlar">
-        <button class="btn btn-cagir" id="cagirBtn" onclick="garsonCagir()">
-          🔔 Garson
-        </button>
-        <button class="btn btn-menu" onclick="menuAc()">
-          📋 Menü
-        </button>
-      </div>
-
-      <div class="basarili-alan" id="basariliAlan">
-        <div class="basarili-icon">✅</div>
-        <div class="basarili-metin">Garsonunuz geliyor!</div>
-        <div class="alt-metin">En kısa sürede masanıza gelecektir.</div>
-      </div>
-
-      <div class="hata-metin" id="hataMetin"></div>
-    </div>
-  </div>
-
-  <!-- MENÜ OVERLAY -->
-  <div class="menu-overlay" id="menuOverlay">
-    <div class="menu-header">
-      <button class="geri-btn" id="geriBtn" onclick="geriGit()">‹</button>
-      <div>
-        <div class="menu-baslik" id="menuBaslik">Menü</div>
-        <div class="menu-altbaslik" id="menuAltbaslik">Kategori seçin</div>
-      </div>
-    </div>
-    <div class="menu-icerik" id="menuIcerik">
-      <div class="yukluyor">Yükleniyor...</div>
-    </div>
-  </div>
-
-  <script>
-    // Masa numarası
-    const parcalar = window.location.pathname.split('/');
-    const masaNo = parseInt(parcalar[parcalar.length - 1]);
-    document.getElementById('masaNo').textContent = isNaN(masaNo) ? '?' : masaNo;
-
-    // Kategori ikonları
-    const ikonlar = {
-      'yemek': '🍽️', 'yemekler': '🍽️',
-      'icecek': '🥤', 'içecek': '🥤', 'icecekler': '🥤', 'içecekler': '🥤',
-      'tatli': '🍰', 'tatlı': '🍰', 'tatlilar': '🍰', 'tatlılar': '🍰',
-      'kahvalti': '🍳', 'kahvaltı': '🍳',
-      'pizza': '🍕', 'pizzalar': '🍕',
-      'burger': '🍔', 'burgerler': '🍔',
-      'corba': '🍲', 'çorba': '🍲', 'corbalar': '🍲', 'çorbalar': '🍲',
-      'salata': '🥗', 'salatalar': '🥗',
-      'kahve': '☕', 'kahveler': '☕',
-      'alkol': '🍺', 'alkollü': '🍺',
-      'tatli': '🍰', 'tatlılar': '🍰',
-      'cocuk': '👶', 'çocuk': '👶',
-    };
-
-    function kategoriIkon(isim) {
-      return ikonlar[isim.toLowerCase()] || '📋';
-    }
-
-    // ── GARSON ÇAĞIR ─────────────────────────────
-    let cagirildi = false;
-
-    async function garsonCagir() {
-      if (cagirildi || isNaN(masaNo)) return;
-      cagirildi = true;
-
-      const btn = document.getElementById('cagirBtn');
-      btn.disabled = true;
-      btn.textContent = '...';
-      document.getElementById('hataMetin').textContent = '';
-
-      try {
-        const yanit = await fetch('/cagir/' + masaNo, { method: 'POST' });
-        if (yanit.ok) {
-          btn.style.display = 'none';
-          document.getElementById('basariliAlan').style.display = 'block';
-        } else { throw new Error(); }
-      } catch (e) {
-        cagirildi = false;
-        btn.disabled = false;
-        btn.innerHTML = '🔔 Garson';
-        document.getElementById('hataMetin').textContent = 'Bağlantı hatası, tekrar deneyin.';
-      }
-    }
-
-    // ── MENÜ ─────────────────────────────────────
-    let mevcutGorunu = 'kategoriler'; // 'kategoriler' veya 'resimler'
-
-    function menuAc() {
-      document.getElementById('menuOverlay').classList.add('acik');
-      kategoriGoster();
-    }
-
-    function menuKapat() {
-      document.getElementById('menuOverlay').classList.remove('acik');
-    }
-
-    function geriGit() {
-      if (mevcutGorunu === 'resimler') {
-        kategoriGoster();
-      } else {
-        menuKapat();
-      }
-    }
-
-    async function kategoriGoster() {
-      mevcutGorunu = 'kategoriler';
-      document.getElementById('menuBaslik').textContent = 'Menü';
-      document.getElementById('menuAltbaslik').textContent = 'Kategori seçin';
-      document.getElementById('geriBtn').innerHTML = '✕';
-
-      const icerik = document.getElementById('menuIcerik');
-      icerik.innerHTML = '<div class="yukluyor">Yükleniyor...</div>';
-
-      try {
-        const yanit = await fetch('/menu-kategoriler');
-        const kategoriler = await yanit.json();
-
-        if (kategoriler.length === 0) {
-          icerik.innerHTML = `
-            <div class="bos-mesaj">
-              <div class="bos-icon">📋</div>
-              <p>Menü henüz eklenmemiş.</p>
-            </div>`;
-          return;
-        }
-
-        icerik.innerHTML = '<div class="kategori-listesi"></div>';
-        const liste = icerik.querySelector('.kategori-listesi');
-
-        kategoriler.forEach(isim => {
-          const kart = document.createElement('div');
-          kart.className = 'kategori-kart';
-          kart.innerHTML = `
-            <div class="kategori-icon">${kategoriIkon(isim)}</div>
-            <div class="kategori-isim">${isim}</div>
-            <div class="kategori-ok">›</div>
-          `;
-          kart.onclick = () => kategoriResimlerGoster(isim);
-          liste.appendChild(kart);
-        });
-      } catch (e) {
-        icerik.innerHTML = '<div class="bos-mesaj"><p>Menü yüklenemedi.</p></div>';
-      }
-    }
-
-    async function kategoriResimlerGoster(kategori) {
-      mevcutGorunu = 'resimler';
-      document.getElementById('menuBaslik').textContent = kategori;
-      document.getElementById('menuAltbaslik').textContent = 'Menü';
-      document.getElementById('geriBtn').innerHTML = '‹';
-
-      const icerik = document.getElementById('menuIcerik');
-      icerik.innerHTML = '<div class="yukluyor">Yükleniyor...</div>';
-      icerik.scrollTop = 0;
-
-      try {
-        const yanit = await fetch('/menu-kategoriler/' + encodeURIComponent(kategori));
-        const resimler = await yanit.json();
-
-        if (resimler.length === 0) {
-          icerik.innerHTML = `
-            <div class="bos-mesaj">
-              <div class="bos-icon">🖼️</div>
-              <p>Bu kategoride henüz resim yok.</p>
-            </div>`;
-          return;
-        }
-
-        icerik.innerHTML = '<div class="resim-listesi"></div>';
-        const liste = icerik.querySelector('.resim-listesi');
-
-        resimler.forEach(dosya => {
-          const img = document.createElement('img');
-          img.className = 'menu-resim';
-          img.src = `/menu/${encodeURIComponent(kategori)}/${encodeURIComponent(dosya)}`;
-          img.alt = kategori;
-          img.loading = 'lazy';
-          liste.appendChild(img);
-        });
-      } catch (e) {
-        icerik.innerHTML = '<div class="bos-mesaj"><p>Resimler yüklenemedi.</p></div>';
-      }
-    }
-  </script>
-</body>
-</html>
+  ]
+}
