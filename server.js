@@ -29,7 +29,12 @@ const aktivCagriler = {};
 
 // ── STATİK DOSYALAR ──────────────────────────────
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(__dirname));
+
+// Kök dizindeki HTML dosyaları (GitHub'a public/ altına yüklenmeyenler için)
+['dashboard.html', 'masa.html', 'yonetim.html'].forEach(dosya => {
+  const tam = path.join(__dirname, dosya);
+  if (fs.existsSync(tam)) app.use('/' + dosya, (req, res) => res.sendFile(tam));
+});
 
 // ── MÜŞTERİ SAYFASI ──────────────────────────────
 app.get('/masa/:no', (req, res) => {
