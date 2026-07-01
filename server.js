@@ -156,6 +156,53 @@ function menuDosyaKaydet() {
   }
 }
 
+// ── YÖNETİM: GITHUB'A KALICI KAYDET ─────────────
+app.post('/yonetim/github-kaydet', async (req, res) => {
+  const { sifre } = req.body;
+  if (sifre !== YONETIM_SIFRESI) return res.status(401).json({ hata: 'Yetkisiz' });
+
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) return res.status(503).json({ hata: 'GITHUB_TOKEN_YOK' });
+
+  const owner = 'caferyuce34-ai';
+  const repo  = 'garson-sistemi';
+  const dosyaYolu = 'menu.json';
+  const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents/${dosyaYolu}`;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    'User-Agent': 'garson-sistemi',
+    Accept: 'application/vnd.github+json',
+    'Content-Type': 'application/json'
+  };
+
+  try {
+    let sha;
+    const getRes = await fetch(apiBase, { headers });
+    if (getRes.ok) {
+      sha = (await getRes.json()).sha;
+    }
+
+    const icerik = Buffer.from(JSON.stringify(menuVerisi, null, 2), 'utf8').toString('base64');
+    const body = {
+      message: 'Menu guncellendi - yonetim paneli',
+      content: icerik,
+      committer: { name: 'Garson Sistemi', email: 'garson@zeyrekhane.com' }
+    };
+    if (sha) body.sha = sha;
+
+    const putRes = await fetch(apiBase, { method: 'PUT', headers, body: JSON.stringify(body) });
+
+    if (putRes.ok) {
+      res.json({ tamam: true });
+    } else {
+      const err = await putRes.json();
+      res.status(500).json({ hata: err.message || 'GitHub hatası' });
+    }
+  } catch (e) {
+    res.status(500).json({ hata: e.message });
+  }
+});
+
 function yerelIP() {
   const arayuzler = os.networkInterfaces();
   for (const isim of Object.keys(arayuzler)) {

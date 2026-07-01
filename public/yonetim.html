@@ -44,6 +44,11 @@
       background: rgba(255,255,255,0.08); border: none; color: #aaa;
       padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px;
     }
+    .btn-kalici {
+      background: #4ade80; color: #000; border: none;
+      padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700;
+    }
+    .btn-kalici:disabled { background: #555; color: #aaa; cursor: default; }
 
     .icerik { padding: 20px; max-width: 800px; margin: 0 auto; }
 
@@ -143,7 +148,10 @@
   <div class="panel" id="yonetimPanel">
     <header>
       <div class="header-baslik">📋 Menü Yönetimi</div>
-      <button class="btn-cikis" onclick="cikisYap()">Çıkış</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn-kalici" id="kaliciBtn" onclick="githubKaydet()">💾 Kalıcı Kaydet</button>
+        <button class="btn-cikis" onclick="cikisYap()">Çıkış</button>
+      </div>
     </header>
     <div class="icerik" id="menuIcerik">
       <p style="color:#666;text-align:center;padding:40px">Yükleniyor...</p>
@@ -377,6 +385,32 @@
           mesajGoster('Hata oluştu', true);
         }
       } catch { mesajGoster('Bağlantı hatası', true); }
+    }
+
+    // ── KALICI KAYDET (GitHub) ────────────────────
+    async function githubKaydet() {
+      const btn = document.getElementById('kaliciBtn');
+      btn.disabled = true;
+      btn.textContent = 'Kaydediliyor...';
+      try {
+        const y = await fetch('/yonetim/github-kaydet', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sifre })
+        });
+        const veri = await y.json();
+        if (y.ok) {
+          mesajGoster('GitHub\'a kaydedildi! Değişiklikler 1-2 dk içinde yayına girer ✓');
+        } else if (veri.hata === 'GITHUB_TOKEN_YOK') {
+          mesajGoster('Render\'a GITHUB_TOKEN eklenmemiş — kurulum tamamlanmamış', true);
+        } else {
+          mesajGoster('Hata: ' + (veri.hata || 'Bilinmiyor'), true);
+        }
+      } catch {
+        mesajGoster('Bağlantı hatası', true);
+      }
+      btn.disabled = false;
+      btn.textContent = '💾 Kalıcı Kaydet';
     }
 
     // ── MESAJ ─────────────────────────────────────
