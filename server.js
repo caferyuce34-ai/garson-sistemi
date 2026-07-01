@@ -9,16 +9,29 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+app.use(express.json());
+
 const PORT = process.env.PORT || 3000;
 const MASA_SAYISI = 28;
+const YONETIM_SIFRESI = 'baksan2026'; // Şifreyi buradan değiştirebilirsiniz
 
-// Aktif çağrılar: { masaNo: { saat, zaman } }
+// ── MENÜ VERİSİ ──────────────────────────────────
+const menuDosyaYolu = path.join(__dirname, 'menu.json');
+let menuVerisi = { restoranAdi: '', kategoriler: [] };
+try {
+  menuVerisi = JSON.parse(fs.readFileSync(menuDosyaYolu, 'utf8'));
+} catch (e) {
+  console.log('menu.json bulunamadi, bos menu kullaniliyor.');
+}
+
+// ── AKTİF ÇAĞRILAR ───────────────────────────────
 const aktivCagriler = {};
 
+// ── STATİK DOSYALAR ──────────────────────────────
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(__dirname));
 
-// Müşteri sayfası (QR koddan açılır)
+// ── MÜŞTERİ SAYFASI ──────────────────────────────
 app.get('/masa/:no', (req, res) => {
   const no = parseInt(req.params.no);
   if (isNaN(no) || no < 1 || no > MASA_SAYISI) {
@@ -30,27 +43,22 @@ app.get('/masa/:no', (req, res) => {
   res.sendFile(masaDosya);
 });
 
-// Garson çağır (müşteri butona basınca)
+// ── GARSON ÇAĞIR ─────────────────────────────────
 app.post('/cagir/:no', (req, res) => {
   const no = parseInt(req.params.no);
   if (isNaN(no) || no < 1 || no > MASA_SAYISI) {
     return res.status(400).json({ hata: 'Geçersiz masa numarası' });
   }
-
   const saat = new Date().toLocaleTimeString('tr-TR', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
   });
-
   aktivCagriler[no] = { saat, zaman: Date.now() };
   io.emit('yeni-cagri', { masa: no, saat });
-
-  console.log(`[${saat}] Masa ${no} garson çağırdı`);
+  console.log(`[${saat}] Masa ${no} garson cagirdi`);
   res.json({ tamam: true });
 });
 
-// Çağrıyı kapat (dashboard'dan tıklanınca)
+// ── ÇAĞRI KAPAT ──────────────────────────────────
 app.post('/temizle/:no', (req, res) => {
   const no = parseInt(req.params.no);
   delete aktivCagriler[no];
@@ -58,39 +66,94 @@ app.post('/temizle/:no', (req, res) => {
   res.json({ tamam: true });
 });
 
-// Tüm aktif çağrılar (dashboard yenilenince senkronize eder)
+// ── DURUM ─────────────────────────────────────────
 app.get('/durum', (req, res) => {
   res.json(aktivCagriler);
 });
 
-// Menü kategorileri
-app.get('/menu-kategoriler', (req, res) => {
-  const menuDir = path.join(__dirname, 'public', 'menu');
-  if (!fs.existsSync(menuDir)) return res.json([]);
-  const kategoriler = fs.readdirSync(menuDir, { withFileTypes: true })
-    .filter(d => d.isDirectory())
-    .map(d => d.name)
-    .sort();
-  res.json(kategoriler);
+// ── MENÜ VERİSİ (MÜŞTERİ) ────────────────────────
+app.get('/menu', (req, res) => {
+  res.json(menuVerisi);
 });
 
-// Kategori içindeki resimler
-app.get('/menu-kategoriler/:kategori', (req, res) => {
-  const kategoriDir = path.join(__dirname, 'public', 'menu', req.params.kategori);
-  if (!fs.existsSync(kategoriDir)) return res.json([]);
-  const resimler = fs.readdirSync(kategoriDir)
-    .filter(f => /\.(jpg|jpeg|png|webp|gif)$/i.test(f))
-    .sort();
-  res.json(resimler);
+// ── YÖNETİM: GİRİŞ ───────────────────────────────
+app.post('/yonetim/giris', (req, res) => {
+  const { sifre } = req.body;
+  if (sifre === YONETIM_SIFRESI) {
+    res.json({ tamam: true });
+  } else {
+    res.status(401).json({ hata: 'Şifre yanlış' });
+  }
 });
+
+// ── YÖNETİM: ÜRÜN GÜNCELLE ───────────────────────
+app.post('/yonetim/urun-guncelle', (req, res) => {
+  const { sifre, kategoriId, urunId, isim, aciklama, fiyat } = req.body;
+  if (sifre !== YONETIM_SIFRESI) return res.status(401).json({ hata: 'Yetkisiz' });
+
+  const kategori = menuVerisi.kategoriler.find(k => k.id === kategoriId);
+  if (!kategori) return res.status(404).json({ hata: 'Kategori bulunamadı' });
+
+  const urun = kategori.urunler.find(u => u.id === urunId);
+  if (!urun) return res.status(404).json({ hata: 'Ürün bulunamadı' });
+
+  urun.isim = isim;
+  urun.aciklama = aciklama;
+  urun.fiyat = parseFloat(fiyat);
+
+  menuDosyaKaydet();
+  res.json({ tamam: true });
+});
+
+// ── YÖNETİM: ÜRÜN EKLE ───────────────────────────
+app.post('/yonetim/urun-ekle', (req, res) => {
+  const { sifre, kategoriId, isim, aciklama, fiyat } = req.body;
+  if (sifre !== YONETIM_SIFRESI) return res.status(401).json({ hata: 'Yetkisiz' });
+
+  const kategori = menuVerisi.kategoriler.find(k => k.id === kategoriId);
+  if (!kategori) return res.status(404).json({ hata: 'Kategori bulunamadı' });
+
+  const maxId = Math.max(0, ...menuVerisi.kategoriler.flatMap(k => k.urunler.map(u => u.id)));
+  kategori.urunler.push({ id: maxId + 1, isim, aciklama: aciklama || '', fiyat: parseFloat(fiyat) });
+
+  menuDosyaKaydet();
+  res.json({ tamam: true });
+});
+
+// ── YÖNETİM: ÜRÜN SİL ────────────────────────────
+app.post('/yonetim/urun-sil', (req, res) => {
+  const { sifre, kategoriId, urunId } = req.body;
+  if (sifre !== YONETIM_SIFRESI) return res.status(401).json({ hata: 'Yetkisiz' });
+
+  const kategori = menuVerisi.kategoriler.find(k => k.id === kategoriId);
+  if (!kategori) return res.status(404).json({ hata: 'Kategori bulunamadı' });
+
+  kategori.urunler = kategori.urunler.filter(u => u.id !== urunId);
+  menuDosyaKaydet();
+  res.json({ tamam: true });
+});
+
+// ── YÖNETİM: MENÜ İNDİR ──────────────────────────
+app.get('/yonetim/menu-indir', (req, res) => {
+  const sifre = req.query.sifre;
+  if (sifre !== YONETIM_SIFRESI) return res.status(401).send('Yetkisiz');
+  res.setHeader('Content-Disposition', 'attachment; filename="menu.json"');
+  res.json(menuVerisi);
+});
+
+function menuDosyaKaydet() {
+  try {
+    fs.writeFileSync(menuDosyaYolu, JSON.stringify(menuVerisi, null, 2), 'utf8');
+  } catch (e) {
+    console.log('menu.json kaydedilemedi (ephemeral ortam)');
+  }
+}
 
 function yerelIP() {
   const arayuzler = os.networkInterfaces();
   for (const isim of Object.keys(arayuzler)) {
     for (const ag of arayuzler[isim]) {
-      if (ag.family === 'IPv4' && !ag.internal) {
-        return ag.address;
-      }
+      if (ag.family === 'IPv4' && !ag.internal) return ag.address;
     }
   }
   return 'localhost';
@@ -100,13 +163,10 @@ server.listen(PORT, '0.0.0.0', () => {
   const ip = yerelIP();
   console.log('');
   console.log('='.repeat(52));
-  console.log('   GARSON ÇAĞIRMA SİSTEMİ ÇALIŞIYOR');
+  console.log('   GARSON CAGIRMA SISTEMI CALISIYOR');
   console.log('='.repeat(52));
   console.log(`   Dashboard : http://${ip}:${PORT}/dashboard.html`);
-  console.log(`   Sunucu IP : ${ip}`);
-  console.log('');
-  console.log('   QR kodları oluşturmak için yeni terminalde:');
-  console.log('   node generate-qr.js');
+  console.log(`   Yonetim   : http://${ip}:${PORT}/yonetim.html`);
   console.log('='.repeat(52));
   console.log('');
 });
